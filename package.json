@@ -1,0 +1,23 @@
+{
+  "name": "marbles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build:client": "NODE_ENV=production webpack -p --config webpack.prod.config.js --progress",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf dist/* && rimraf server.js"
+  },
+  "author": "Martin Castellanos",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3"
+  },
+  "devDependencies": {
+    "file-loader": "^0.11.2",
+    "webpack": "^2.6.1",
+    "webpack-dev-middleware": "^1.10.2",
+    "webpack-hot-middleware": "^2.18.0"
+  }
+}
