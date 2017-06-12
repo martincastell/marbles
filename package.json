@@ -12,7 +12,9 @@
   "author": "Martin Castellanos",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "rxjs": "^5.4.0",
+    "ws": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^4.0.0",

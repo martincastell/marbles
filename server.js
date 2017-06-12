@@ -3,14 +3,15 @@ const express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
+const http = require('http');
+const ws = require('ws');
 const config = require('./webpack.dev.config.js');
 
-const isDevelopment = process.env.NODE_ENV !== 'production';
-
-const app = express();
 const DIST_DIR = path.join(__dirname, 'dist');
 const DEFAULT_PORT = 3000;
 const compiler = webpack(config);
+const isDevelopment = process.env.NODE_ENV !== 'production';
+const app = express();
 
 app.set('port', process.env.PORT || DEFAULT_PORT);
 
@@ -38,5 +39,15 @@ if (isDevelopment) {
   app.get('*', (req, res) => res.sendFile('index.html'));
 }
 
+const server = http.createServer(app);
+const wss = new ws.Server({ server });
 
-app.listen(app.get('port'));
+wss.on('connection', function connection(ws) {
+  ws.on('message', function incoming(message) {
+    ws.send(`echo: ${message}`);
+  });
+
+  ws.send('Hello World');
+});
+
+server.listen(app.get('port'));
