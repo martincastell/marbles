@@ -18,6 +18,15 @@ const sourceEl = document.querySelectorAll('[name="source"]');
 const random = (min, max) => Math.floor(Math.random() * max) + min;
 const randomX = (offset) => random(0, offset.right);
 const randomY = (offset) => random(0, offset.bottom);
+const randomColor = () => `rgb(${random(0, 255)}, ${random(0, 255)}, ${random(0, 255)})`;
+const buildMarble = ({ clientX, clientY }, color) => ({
+  x: clientX - marbleRadius,
+  y: clientY - offset.top - marbleRadius,
+  color});
+const getColor$ = () => Rx.Observable
+  .fromEvent(colorEl, 'change')
+  .map((event) => event.target.value)
+  .startWith(colorEl.value);
 
 const gridSize$ = Rx.Observable
   .fromEvent(window, 'resize')
@@ -25,19 +34,20 @@ const gridSize$ = Rx.Observable
   .map(() => gridEl.getBoundingClientRect())
   .startWith(offset);
 
-const color$ = Rx.Observable
-  .fromEvent(colorEl, 'change')
-  .map((event) => event.target.value)
-  .startWith(colorEl.value);
+
 
 const sources = {
-  mousemove: () => Rx.Observable.fromEvent(document.documentElement, 'mousemove').throttleTime(50),
+  mousemove: () => Rx.Observable
+    .fromEvent(document.documentElement, 'mousemove')
+    .throttleTime(50)
+    .withLatestFrom(getColor$(), buildMarble),
   websocket: () =>  marbleService.getMarbles$(),
   random: () =>
     Rx.Observable
       .combineLatest(Rx.Observable.interval(500), gridSize$)
-      .map(([_, offset]) => ({ clientX: randomX(offset), clientY: randomY(offset) })),
-  click: () => Rx.Observable.fromEvent(gridEl, 'click'),
+      .map(([_, offset]) => ({ x: randomX(offset), y: randomY(offset), color: randomColor() })),
+  click: () => Rx.Observable.fromEvent(gridEl, 'click')
+    .withLatestFrom(getColor$(), buildMarble),
 };
 
 const source$ = Rx.Observable.fromEvent(sourceEl, 'change')
@@ -45,13 +55,7 @@ const source$ = Rx.Observable.fromEvent(sourceEl, 'change')
   .startWith('click')
   .switchMap((sourceName) => sources[sourceName]());
 
-const config$ = source$.withLatestFrom(color$, (event, color) => ({
-  color,
-  x: event.clientX - marbleRadius,
-  y: event.clientY - offset.top - marbleRadius,
-}));
-
-const marble$ = config$
+const marble$ = source$
   .scan((acc, marble) => [...acc, marble], []);
 
 const animationFrame$ = Rx.Observable.interval(0, Scheduler.animationFrame);
