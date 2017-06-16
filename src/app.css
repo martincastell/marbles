@@ -1,0 +1,20 @@
+.container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #263238;
+  color: #ECEFF1;
+
+}
+
+.controls {
+  padding: 20px;
+  flex: 0 0 auto;
+}
+
+.grid {
+  position: relative;
+  overflow: hidden;
+  flex: 1 0 auto;
+  background: #000;
+}

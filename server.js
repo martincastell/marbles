@@ -44,10 +44,10 @@ const wss = new ws.Server({ server });
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
-    ws.send(`echo: ${message}`);
+    ws.send(message);
   });
 
-  ws.send('Hello World');
+  ws.send('blue');
 });
 
 server.listen(app.get('port'));

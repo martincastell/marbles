@@ -1,18 +1,16 @@
-import { Observable } from 'rxjs/Observable';
+// import { Observable } from 'rxjs/Observable';
+import {WebSocketSubject} from 'rxjs/observable/dom/WebSocketSubject';
+
+
+const websocket = WebSocketSubject.create({
+  url: 'ws://localhost:3000',
+  resultSelector: (event) => event.data,
+});
 
 export function getMarbles$() {
-  return Observable.create((subscriber) => {
-    const ws = new WebSocket('ws://localhost:3000');
-
-    ws.onmessage = function (event) {
-      subscriber.next(event.data);
-    };
-
-    ws.onopen = function () {
-      ws.send('Hello Server');
-    };
-
-    return () => ws.close();
-  });
+  return websocket.asObservable();
 }
 
+export function sendMarble(marble) {
+  websocket.next(marble);
+}

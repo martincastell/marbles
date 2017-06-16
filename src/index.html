@@ -6,6 +6,18 @@
   <script defer src="/bundle.js"></script>
 </head>
 <body>
-<div id="hello"></div>
+  <div class="container">
+    <div class="controls">
+      <input type="color" id="color" value="#2196F3" />
+
+      <input type="radio" name="source" value="click" id="source-click" checked />
+      <label for="source-click">Click</label>
+      <input type="radio" name="source" value="mousemove" id="source-mousemove" />
+      <label for="source-mousemove">Mouse Move</label>
+      <input type="radio" name="source" value="random" id="source-random" />
+      <label for="source-random">Random</label>
+    </div>
+    <div id="grid" class="grid"></div>
+  </div>
 </body>
 </html>
