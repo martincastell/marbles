@@ -34,8 +34,6 @@ const gridSize$ = Rx.Observable
   .map(() => gridEl.getBoundingClientRect())
   .startWith(offset);
 
-
-
 const sources = {
   mousemove: () => Rx.Observable
     .fromEvent(document.documentElement, 'mousemove')
